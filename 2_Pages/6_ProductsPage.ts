@@ -1,4 +1,4 @@
-import { Locator, Page } from "@playwright/test";
+import { expect, Locator, Page } from "@playwright/test";
 
 export default class Products {
   readonly page: Page;
@@ -8,6 +8,7 @@ export default class Products {
 //   category
   readonly category: Locator;
 //   products
+readonly productButton:Locator
   readonly products :Locator;
   readonly productsTitles:Locator;
   readonly title:Locator;
@@ -22,12 +23,21 @@ readonly productBrand:Locator;
 readonly brandsProducts:Locator;
 readonly brandName:Locator;
 readonly brandNumber:Locator;
+readonly quantity:Locator;
+readonly addToCartProductDetails:Locator;
 // cart
-readonly singleProduct:Locator;
+readonly prod:Locator;
 readonly addToCart:Locator;
 readonly viewCart:Locator;
 readonly continueShopping:Locator;
+readonly modelContent :Locator;
+readonly modelContentTitle:Locator;
+readonly cartButton:Locator;
+readonly cartContent:Locator;
+readonly deleteCart:Locator;
+readonly deleteAccount:Locator;
 
+// delete compte
 
 
 
@@ -39,6 +49,7 @@ readonly continueShopping:Locator;
     // category
     this.category = this.page.locator('#accordian');
     // products
+    this.productButton = this.page.locator('.container .nav').getByRole('link', { name: 'Products' });
     this.products = this.page.locator('.features_items').locator('.product-image-wrapper')
     this.productsTitles = this.page.locator('.features_items .productinfo p');
     this.title = this.page.locator('.features_items .title')
@@ -50,16 +61,24 @@ readonly continueShopping:Locator;
     this.productAvailability = this.page.locator('.product-information p:has-text("Availability:")');
     this.productCondition = this.page.locator('.product-information p:has-text("Condition:")');
     this.productBrand = this.page.locator('.product-information p:has-text("Brand:")');
+    this.quantity = this.productInfo.locator('#quantity')
+    this.addToCartProductDetails=this.productInfo.getByRole('button', { name: 'Add to cart' });
     // Brand
     this.brandsProducts = this.page.locator('.brands-name ul li')
     this.brandName = this.page.locator('.brands-name ul li a')
     this.brandNumber = this.page.locator('.brands-name ul li a span')
     // cart
-    this.singleProduct = this.page.locator('.single-products');
-    this.addToCart = this.singleProduct.getByRole('link', { name: 'Add to cart' });
-    this.viewCart = this.page.locator('.modal-content').getByRole('link', { name: 'View Cart' });
-    this.continueShopping = this.page.locator('.modal-content').getByRole('button', { name: 'Continue Shopping' });
-
+    this.prod = this.page.locator('.single-products');;
+    this.addToCart = this.prod.locator('.product-overlay .overlay-content a');
+    this.modelContent  = this.page.locator('.modal-content');
+    this.modelContentTitle = this.modelContent.locator('.modal-title');
+    this.viewCart = this.modelContent.getByRole('link', { name: 'View Cart' });
+    this.continueShopping = this.modelContent.getByRole('button', { name: 'Continue Shopping' });
+    this.cartButton = this.page.locator('.container .nav').getByRole('link', { name: 'Cart' });
+    this.cartContent = this.page.locator('#cart_info_table tbody tr');
+    this.deleteCart = this.cartContent.locator("td .cart_quantity_delete")
+// delete compte
+    this.deleteAccount = this.page.locator('.container .nav').getByRole('link', { name: 'Delete Account' });
 
 
 
@@ -86,6 +105,9 @@ if (!(await subCatItem.isVisible())) {
 
   }
 //   Products
+async productButtonClick(){
+  await this.productButton.click()
+}
   async getAllProductsExist(){
     return await this.products.all()
   }
@@ -96,6 +118,14 @@ return await this.productsTitles.allTextContents();
         
     await this.products.first().getByText('View Product').click();
   }
+  //   product detail
+async getProductInfo(num:number) {
+  const product = this.prod.nth(num)
+    return {
+      name: await product.locator('.productinfo p').nth(0).innerText(),
+      price: await product.locator('.productinfo h2').nth(0).innerText(),
+    };
+}
 //   product detail
 async getProductDetails() {
     return {
@@ -106,6 +136,12 @@ async getProductDetails() {
       condition: await this.productCondition.innerText(),
       brand: await this.productBrand.innerText(),
     };
+}
+async quantityChange(num:string){
+  await this.quantity.fill(num);
+}
+async addToCartProductDetailsClick(){
+  await this.addToCartProductDetails.click()
 }
 // brandd
 
@@ -120,8 +156,11 @@ async allBrandsNameArray(){
 async goToBrandExact(){
      await this.brandsProducts.first().locator('a').click()
 }
+
 // cart
-async addToCartClick(locator:Locator){
+async addToCartProductClick(num:number){
+  await this.prod.nth(num).hover();
+  await this.addToCart.nth(num).click();
 }
 async viewCartClick(){
     await this.viewCart.click()
@@ -131,6 +170,39 @@ async continueShoppingClick(){
 }
 
 
+async cartButtonClick(){
+  await this.cartButton.click()
+}
+async getCartContent(){
+const content = this.cartContent.all()
+  return content;
+}
+async getCartContity(){
+const content = this.cartContent.locator('.cart_quantity button').textContent()
+  return content;
+}
+async deleteCartClick(){
+  await this.cartContent.first().waitFor({ state: 'visible', timeout: 5000 }).catch(() => {});
+    const deleteC = await this.deleteCart?.all()
+  if(deleteC.length && deleteC.length>0){
+     const before = await this.cartContent.count();
+  await this.deleteCart.first().click();
+  await expect(this.cartContent).toHaveCount(before - 1);
+
+  }
+}
+async getProductCartDetails(num:number) {
+  const cartContentNum = this.cartContent.nth(num)
+    return {
+      name: await cartContentNum.locator('.cart_description h4 a').innerText(),
+      price: await cartContentNum.locator('.cart_price p').innerText(),
+    };
+}
+
+// delete compte
+async deleteAccountClick(){
+  await this.deleteAccount.click();
+}
 
 //   
   async getTitle(){

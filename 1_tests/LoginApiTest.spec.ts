@@ -5,6 +5,8 @@ import LoginApi from '../3_API/LoginApi';
 import UserApi from "../3_API/UserApi";
 import { buildUserDetails, UserDetails } from "../4_Data/1-UserData";
 import { faker } from "@faker-js/faker";
+import Products from "../2_Pages/6_ProductsPage";
+
 
 test.describe('login test',()=>{
   

@@ -32,7 +32,6 @@ test.describe("Delete", () => {
     const response = new UserApi(request);
     const responseBody = await response.delete(currentUser.email,currentUser.password);
     const responseBodyJson = await responseBody.json();
-    console.log(responseBodyJson);
 
     expect(responseBodyJson).toHaveProperty("responseCode", 200);
     expect(responseBodyJson).toHaveProperty("message", "Account deleted!");
@@ -48,20 +47,16 @@ test.describe("Delete", () => {
     const responseBody = await response.update(updatedData);
 
     const responseBodyJson = await responseBody.json();
-        console.log(responseBodyJson);
 
     expect(responseBodyJson).toHaveProperty("responseCode", 200);
     expect(responseBodyJson).toHaveProperty("message", "User updated!");
   });
    test("GET user account detail by email ", async ({ request }) => {
     const response = new UserApi(request);
-    console.log(currentUser.email);
     
     const responseBody = await response.getUserDetails(currentUser.email);
     const responseBodyJson = await responseBody.json();
-    console.log(responseBodyJson);
 
     expect(responseBodyJson).toHaveProperty("responseCode", 200);
-    // expect(responseBodyJson).toHaveProperty("message", "Account deleted!");
   });
 });

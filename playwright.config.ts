@@ -38,52 +38,66 @@ export default defineConfig({
 
   /* Configure projects for major browsers */
   projects: [
-     {
-      name: 'setup',
-      testMatch: /global\.setup\.ts/,
-    },
-    {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
-      testIgnore: /.*Cart.*|.*Checkout.*/,  
-      // testIgnore: /.*Cart.*|.*Checkout.*|.*Products.*/,  
-    },
-     {
-    name: 'chromium-authenticated',
+  // 1. Setup Project
+  {
+    name: 'setup',
+    testMatch: /global\.setup\.ts/,
+  },
+
+  // --- CHROMIUM ---
+  {
+    name: 'chromium-unauth',
+    use: { ...devices['Desktop Chrome'] },
+    grepInvert: /@auth/,
+    testIgnore: /.*Cart.*|.*Checkout.*|.*Products.*/,
+  },
+  {
+    name: 'chromium-auth',
     use: {
       ...devices['Desktop Chrome'],
       storageState: 'playwright/.auth/user.json',
     },
-    testMatch: /.*Cart.*|.*Checkout.*/,     
-    // testMatch: /.*Cart.*|.*Checkout.*|.*Products.*/,     
+    grep: /@auth/,
+    testMatch: /.*Cart.*|.*Checkout.*|.*Products.*/,
     dependencies: ['setup'],
   },
 
-    // {
-    //   name: 'firefox',
-    //   use: { ...devices['Desktop Firefox'],
-    //     launchOptions: {
-    //       firefoxUserPrefs: {
-    //         'privacy.trackingprotection.enabled': true, // تفعيل حماية التتبع المدمجة في فايرفوكس
-    //       },
-    //     },
-    //   },
-    // },
+  // --- FIREFOX ---
+  // {
+  //   name: 'firefox-unauth',
+  //   use: { ...devices['Desktop Firefox'] },
+  //   grepInvert: /@auth/,
+  //   testIgnore: /.*Cart.*|.*Checkout.*/,
+  // },
+  // {
+  //   name: 'firefox-auth',
+  //   use: {
+  //     ...devices['Desktop Firefox'],
+  //     storageState: 'playwright/.auth/user.json',
+  //   },
+  //   grep: /@auth/,
+  //   testMatch: /.*Cart.*|.*Checkout.*/,
+  //   dependencies: ['setup'],
+  // },
 
-    // {
-    //   name: 'webkit',
-    //   use: { ...devices['Desktop Safari'] },
-    // },
+  // --- WEBKIT (SAFARI) ---
+  // {
+  //   name: 'webkit-unauth',
+  //   use: { ...devices['Desktop Safari'] },
+  //   grepInvert: /@auth/,
+  //   testIgnore: /.*Cart.*|.*Checkout.*/,
+  // },
+  // {
+  //   name: 'webkit-auth',
+  //   use: {
+  //     ...devices['Desktop Safari'],
+  //     storageState: 'playwright/.auth/user.json',
+  //   },
+  //   grep: /@auth/,
+  //   testMatch: /.*Cart.*|.*Checkout.*/,
+  //   dependencies: ['setup'],
+  // },
 
-    /* Test against mobile viewports. */
-    // {
-    //   name: 'Mobile Chrome',
-    //   use: { ...devices['Pixel 5'] },
-    // },
-    // {
-    //   name: 'Mobile Safari',
-    //   use: { ...devices['iPhone 12'] },
-    // },
 
     /* Test against branded browsers. */
     // {

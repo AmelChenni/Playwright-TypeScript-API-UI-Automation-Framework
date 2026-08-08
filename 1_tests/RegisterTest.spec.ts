@@ -1,5 +1,7 @@
+import Products from "../2_Pages/6_ProductsPage";
 import { expect, test } from "../5_Fixtures/2_SignupFixture";
 import { faker } from "@faker-js/faker";
+
 
 test.describe("New User Signup!-Positive Tests", () => {
   test("should get the signup page if email and password correct", async ({

@@ -25,7 +25,6 @@ test.describe("products", () => {
     const responseBody = await response.postProducts();
 
     const responseBodyJson = await responseBody.json();
-    console.log(await responseBodyJson);
 
     expect(responseBodyJson).toHaveProperty("responseCode", 405);
     expect(responseBodyJson).toHaveProperty("message", "This request method is not supported.");

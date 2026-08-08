@@ -2,6 +2,7 @@ import { expect, test } from "../5_Fixtures/3_AcountInfoFixture";
 import { buildUserDetails, UserDetails } from "../4_Data/1-UserData";
 import AcountCreatedPage from "../2_Pages/5_AcountCreatedPage";
 import { faker } from "@faker-js/faker";
+import Products from "../2_Pages/6_ProductsPage";
 
 const userPassword = [faker.internet.password({ length: 10 }), "123", "a"];
 test.describe("Positive Tests", () => {

@@ -29,8 +29,6 @@ export  function isTitleMatchingCategory(subCat:string,title:string) {
    
 
     const found = cleanWordsArr.includes(cleanTitle);
-
-    console.log(found,cleanWordsArr,cleanTitle);
     
     
 }
