@@ -65,12 +65,12 @@ test.describe("Search Functionality Tests", () => {
 test.describe("Detail Page Navigation", () => {
   test("Product Details - View First Product ", async ({ page }) => {
     const products = new Products(page);
-    await products.viewFirstProductClick();
+    await products.viewProductDetailsClick(0);
     await expect(page).toHaveURL(`/product_details/1`);
   });
   test("Product Details - Verify Essential Fields", async ({ page }) => {
     const products = new Products(page);
-    await products.viewFirstProductClick();
+    await products.viewProductDetailsClick(0);
     //is visible    
     await expect(products.productName).toBeVisible();
     await expect(products.productCategory).toBeVisible();
@@ -252,7 +252,7 @@ await page.goto('/view_cart');
   await products.productButtonClick();
 
   const num ="5"
-  await products.viewFirstProductClick()
+  await products.viewProductDetailsClick(0)
   await expect(page).toHaveURL(`/product_details/1`);
   await products.quantityChange(num);
 
@@ -263,7 +263,7 @@ await page.goto('/view_cart');
 
     // go to cart to check the quantity
     await products.viewCartClick();
-    const quantityCart = await products.getCartContity()
+    const quantityCart = await products.getCartQuantity()
 
       
     expect(num).toEqual(quantityCart)
@@ -273,7 +273,16 @@ await page.goto('/view_cart');
   });
 
    test('Cart - Add Multiple Products', { tag: '@auth' }, async ({ page }) => {
-  const products = new Products(page);
+  
+   const products = new Products(page);
+//   // clean the cart
+ await page.goto('/view_cart');
+  let contents = await products.getCartContent();  
+ while (contents.length>0) {
+   await products.deleteCartClick();  
+  contents = await products.getCartContent()
+ }
+   await products.productButtonClick();
     const firstProductNum = 2;
     const productDetailFirst = await products.getProductInfo(firstProductNum)
 
@@ -287,8 +296,8 @@ await page.goto('/view_cart');
 
 
     // product details from Cart page
-    let contents = await products.getCartContent();
-    expect(contents.length).toEqual(2);
+    const cartContents = await products.getCartContent();
+    expect(cartContents.length).toEqual(2);
 
     const productCartDetailFirst=await products.getProductCartDetails(0);
     const productCartDetailSecond=await products.getProductCartDetails(1);
@@ -303,9 +312,5 @@ await page.goto('/view_cart');
    
   });
 
-  test('Cleanup - Delete User Account', { tag: '@cleanup' }, async ({ page }) => {
-    const products = new Products(page);
-    await products.deleteAccountClick();
-    await expect(page.getByText('Account Deleted!')).toBeVisible();
-  });
+
 });

@@ -9,7 +9,7 @@ export const test = base.extend<{ mainPage: MainPage }>({
     ]);
 
     const mainPage = new MainPage(page);
-    await mainPage.signupLoginBottunClick();
+    await mainPage.signupLoginBعttunClick();
     await use(mainPage);    
 
    },

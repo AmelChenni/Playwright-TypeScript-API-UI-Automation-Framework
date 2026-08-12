@@ -12,7 +12,7 @@ A layered, scalable **End-to-End + API Test Automation Framework** built with **
 ## 🎯 Framework Highlights
 
 - **Page Object Model (POM):** page elements and actions are fully separated from test specs for a maintainable, scalable architecture.
-- **Composable Custom Fixtures:** built with Playwright's `test.extend`, chained together (`mainPage` → `registerLoginPage` → `acountInfoPage`) so each test pulls in exactly the setup it needs — no duplicated boilerplate.
+- **Composable Custom Fixtures:** built with Playwright's `test.extend`, chained together (`mainPage` → `registerLoginPage` → `AccountInfoPage`) so each test pulls in exactly the setup it needs — no duplicated boilerplate.
 - **Global Authenticated Setup:** a dedicated `setup` project registers a user via the API and logs in once through the UI, then persists the session with `storageState`. Authenticated tests reuse that session instead of logging in from scratch.
 - **API + UI in One Framework:** a typed API client layer (`3_API`) covers REST endpoints — registration, login, products, user CRUD — with response and schema assertions, alongside full UI coverage of signup, account creation, product search, filtering, and category navigation.
 - **Cart Flow with Business-Logic Validation:** cart tests don't just check for a confirmation toast — product name and price are captured on the listing page and independently cross-checked against the cart page, and quantity changes on the product-detail page are verified to carry through correctly.

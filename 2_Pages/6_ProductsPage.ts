@@ -37,7 +37,7 @@ readonly cartContent:Locator;
 readonly deleteCart:Locator;
 readonly deleteAccount:Locator;
 
-// delete compte
+// delete 
 
 
 
@@ -77,7 +77,7 @@ readonly deleteAccount:Locator;
     this.cartButton = this.page.locator('.container .nav').getByRole('link', { name: 'Cart' });
     this.cartContent = this.page.locator('#cart_info_table tbody tr');
     this.deleteCart = this.cartContent.locator("td .cart_quantity_delete")
-// delete compte
+// delete 
     this.deleteAccount = this.page.locator('.container .nav').getByRole('link', { name: 'Delete Account' });
 
 
@@ -114,11 +114,12 @@ async productButtonClick(){
   async getAllProductsTitle(){
 return await this.productsTitles.allTextContents();
   }
-  async viewFirstProductClick(){
+  async viewProductDetailsClick(num:number){
         
-    await this.products.first().getByText('View Product').click();
+    await this.products.nth(num).getByText('View Product').click();
   }
   //   product detail
+
 async getProductInfo(num:number) {
   const product = this.prod.nth(num)
     return {
@@ -126,6 +127,7 @@ async getProductInfo(num:number) {
       price: await product.locator('.productinfo h2').nth(0).innerText(),
     };
 }
+
 //   product detail
 async getProductDetails() {
     return {
@@ -143,6 +145,9 @@ async quantityChange(num:string){
 async addToCartProductDetailsClick(){
   await this.addToCartProductDetails.click()
 }
+async addToCartFromProductDetailsClick(){
+  await this.addToCart.click()
+}
 // brandd
 
 async allBrandsNumberArray(){
@@ -159,14 +164,19 @@ async goToBrandExact(){
 
 // cart
 async addToCartProductClick(num:number){
-  await this.prod.nth(num).hover();
-  await this.addToCart.nth(num).click();
+ const product = this.prod.nth(num);
+  await product.scrollIntoViewIfNeeded();
+  await product.hover();
+  const link = this.addToCart.nth(num);
+  await link.waitFor({ state: 'visible' });
+  await link.click();
 }
 async viewCartClick(){
     await this.viewCart.click()
 }
 async continueShoppingClick(){
-    await this.continueShopping.click()
+  await this.continueShopping.waitFor({ state: 'visible' });
+await this.continueShopping.click({ force: true });
 }
 
 
@@ -177,12 +187,12 @@ async getCartContent(){
 const content = this.cartContent.all()
   return content;
 }
-async getCartContity(){
+async getCartQuantity(){
 const content = this.cartContent.locator('.cart_quantity button').textContent()
   return content;
 }
 async deleteCartClick(){
-  await this.cartContent.first().waitFor({ state: 'visible', timeout: 5000 }).catch(() => {});
+  await this.cartContent.first().waitFor({ state: 'visible', timeout: 5000 });
     const deleteC = await this.deleteCart?.all()
   if(deleteC.length && deleteC.length>0){
      const before = await this.cartContent.count();
@@ -199,7 +209,7 @@ async getProductCartDetails(num:number) {
     };
 }
 
-// delete compte
+// delete 
 async deleteAccountClick(){
   await this.deleteAccount.click();
 }

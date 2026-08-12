@@ -2,7 +2,7 @@ import { Locator, Page } from "@playwright/test";
 
 
 export default class AcuntInfoPage{
-    readonly page: Page;
+  readonly page: Page;
   readonly mrRadio: Locator;
   readonly mrsRadio: Locator;
   readonly passwordInput: Locator;

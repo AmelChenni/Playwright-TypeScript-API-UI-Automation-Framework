@@ -37,7 +37,7 @@ export default defineConfig({
 
 
   /* Configure projects for major browsers */
-  projects: [
+projects: [
   // 1. Setup Project
   {
     name: 'setup',
@@ -48,8 +48,7 @@ export default defineConfig({
   {
     name: 'chromium-unauth',
     use: { ...devices['Desktop Chrome'] },
-    grepInvert: /@auth/,
-    testIgnore: /.*Cart.*|.*Checkout.*|.*Products.*/,
+    grepInvert: /@auth/,  
   },
   {
     name: 'chromium-auth',
@@ -57,10 +56,10 @@ export default defineConfig({
       ...devices['Desktop Chrome'],
       storageState: 'playwright/.auth/user.json',
     },
-    grep: /@auth/,
-    testMatch: /.*Cart.*|.*Checkout.*|.*Products.*/,
+    grep: /@auth/,         
     dependencies: ['setup'],
   },
+
 
   // --- FIREFOX ---
   // {

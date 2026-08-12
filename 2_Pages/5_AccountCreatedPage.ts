@@ -1,7 +1,7 @@
 import { Locator, Page } from "@playwright/test";
 
 
-export default class AcountCreatedPage{
+export default class AccountCreatedPage{
     readonly page :Page;
     readonly text : Locator;
     readonly contuneButton: Locator
