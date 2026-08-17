@@ -1,4 +1,3 @@
-import Products from '../2_Pages/6_ProductsPage';
 import {expect, test } from '../5_Fixtures/4_EmptyCartFxture'
 
 test.describe("Empty Cart", () => {

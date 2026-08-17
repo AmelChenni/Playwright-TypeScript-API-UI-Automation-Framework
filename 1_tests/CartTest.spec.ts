@@ -1,4 +1,3 @@
-import { beforeEach } from "node:test";
 import Products from "../2_Pages/6_ProductsPage";
 import CartPage from "../2_Pages/7_CartPage";
 import { expect, test } from "../5_Fixtures/5_CartFixture";
@@ -183,10 +182,10 @@ for (const i of productsIndex) {
 
 
       for (let i = 0; i < cartBodyLenght; i++) {
-        const price: number | null = priceStringToInt(
+        const price: number | 0 = priceStringToInt(
           (await cartPage.getcartContent(i)).total,
         );
-        if (price !== null) {
+        if (price !== 0) {
           totalCart.push(price);
         }
       }
@@ -194,13 +193,13 @@ for (const i of productsIndex) {
       // expect total
       for (let i = 0; i < cartBodyLenght; i++) {
 
-        const price: number | null =
+        const price: number | 0 =
           priceStringToInt(
             await (
               await products.getProductCartDetails(i)
             ).price,
           )! * parseInt(quantityNumber);
-        if (price !== null) {
+        if (price !== 0) {
 
 
           totalProducts.push(price);
@@ -221,4 +220,115 @@ for (const i of productsIndex) {
 });
 
 });
+
+test.describe("Cart Item Operations & Persistence",()=>{
+    test.describe.configure({ mode: "serial" });
+
+   test(
+    "Cart Item - Remove Single Product",
+    { tag: "@auth" },
+    async ({ page, addProducts }) => {
+      const productsIndex = [0,4];
+      const cartPage = await addProducts(productsIndex);
+      const products = new Products(page)
+      await page.goto("/view_cart", { waitUntil: "domcontentloaded" });
+      let cartLenghtBefore = await cartPage.cartBodyLenght();
+         await products.deleteCartClick();  
+      let cartLenghtAfter = await cartPage.cartBodyLenght();
+      expect(cartLenghtAfter).toEqual(cartLenghtBefore -1)
+
+    },
+  );
+
+     test(
+    "Cart Items - Clear Entire Cart",
+    { tag: "@auth" },
+    async ({ page, addProducts }) => {
+      const productsIndex = [0,4];
+      const cartPage = await addProducts(productsIndex);
+      const products = new Products(page)
+      await page.goto("/view_cart", { waitUntil: "domcontentloaded" });
+      let contents = await products.getCartContent();  
+    while (contents.length>0) {
+      await products.deleteCartClick();  
+      contents = await products.getCartContent()
+ }
+ await expect(cartPage.emptyCart).toBeVisible()
+    }
+  );
+
+       test(
+    "Cart Persistence Across Refresh / Navigation",
+    { tag: "@auth" },
+    async ({ page, addProducts }) => {
+      const productsIndex = [0,4];
+      const cartPage = await addProducts(productsIndex);
+        await page.goto("/view_cart", { waitUntil: "domcontentloaded" });
+      // get the products from cart **before**
+      const cartBeforelenght = await cartPage.cartBodyLenght();
+
+      const cartBefore:{ name: string; price: string }[] = [];
+
+      for (let i = 0; i < cartBeforelenght; i++) {
+        
+       cartBefore.push({
+        name :(await cartPage.getcartContent(i)).name,
+        price :(await cartPage.getcartContent(i)).price,
+       })
+      }
+      // Refresh 
+      await page.reload()
+      // get the products from cart **after**
+      const cartAfterlenght = await cartPage.cartBodyLenght();
+
+      const cartAfter:{ name: string; price: string }[] = [];
+
+      for (let i = 0; i < cartAfterlenght; i++) {
+       cartAfter.push({
+        name :(await cartPage.getcartContent(i)).name,
+        price :(await cartPage.getcartContent(i)).price,
+       })
+      }
+      expect(cartAfter).toEqual(cartBefore)
+      expect(cartAfterlenght).toEqual(cartBeforelenght)
+     
+    }
+  );
+})
+
+test.describe("Checkout Integration",()=>{
+    test.describe.configure({ mode: "serial" });
+
+   test(
+    "Proceed to Checkout - Authenticated User",
+    { tag: "@auth" },
+    async ({ page, addProducts }) => {
+      const productsIndex = [0,4];
+      const cartPage = await addProducts(productsIndex);
+      await page.goto("/view_cart", { waitUntil: "domcontentloaded" });
+      await cartPage.proccedToCheckoutBtnClick()
+      await expect(page).toHaveURL(/checkout/)
+    },
+  );
+  test(
+  "Guest Checkout - Show Register/Login Modal for Unauthenticated User",
+  { tag: "@unauth" },
+  async ({ page }) => {
+    const products = new Products(page);
+    const cartPage = new CartPage(page);
+
+    await page.goto("/products");
+    await products.addToCartProductClick(0);
+
+    await products.viewCartClick();
+    await expect(page).toHaveURL(/view_cart/);
+
+    await cartPage.proccedToCheckoutBtnClick();
+
+    const checkoutModal = page.locator("#checkoutModal");
+    await expect(checkoutModal).toBeVisible();
+    await expect(checkoutModal).toContainText("Register / Login");
+  }
+);
+})
 

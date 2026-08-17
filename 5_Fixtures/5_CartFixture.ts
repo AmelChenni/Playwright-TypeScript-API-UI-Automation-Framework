@@ -12,7 +12,9 @@ export const test = base.extend<MyFixtures>({
 
     const addProducts = async (productIds: number[]) => {
 await page.goto('/products', { waitUntil: 'domcontentloaded' });
-await page.waitForLoadState('networkidle');
+await page.waitForLoadState('domcontentloaded');
+      // const productsId = [0];
+
       for (const id of productIds) {
         await productsPage.addToCartProductClick(id);
         await productsPage.continueShoppingClick();

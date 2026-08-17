@@ -28,7 +28,7 @@ export default class CartPage{
         this.quantity= this.page.locator('.cart_menu .quantity')
         // this.total= this.page.locator('.cart_menu .total')
         // this.delete= this.page.locator('.cart_menu')
-        this.proccedToCheckoutBtn= this.page.getByRole('link',{name:'Proceed To Checkout'})
+        this.proccedToCheckoutBtn= this.page.locator(".container .check_out")
         this.homeBtn= this.page.locator('.breadcrumb').getByRole('link',{name:'Home'})
     }
     // methodes
@@ -71,4 +71,19 @@ async cartBodyLenght(){
 async changeQuantity(num:string){
    (await this.getcartContent(0)).quantity.fill(num)
 }
+
+async proccedToCheckoutBtnClick(){
+    await this.proccedToCheckoutBtn.click()
+}
+// delete
+// async deleteCartClick(num:number){
+//   await this.cartContent.nth(num).waitFor({ state: 'visible', timeout: 5000 });
+//     const deleteC = await this.deleteCart?.all()
+//   if(deleteC.length && deleteC.length>0){
+//      const before = await this.cartContent.count();
+//   await this.deleteCart.nth(num).click();
+//   await expect(this.cartContent).toHaveCount(before - 1);
+
+//   }
+// }
 }
