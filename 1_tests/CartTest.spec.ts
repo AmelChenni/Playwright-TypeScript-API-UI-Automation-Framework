@@ -82,8 +82,8 @@ for (const i of productsIndex) {
 
       for (let i = 0; i < cartBodyLenght; i++) {
        resultObject.push({
-        name :(await cartPage.getcartContent(i)).name,
-        price :(await cartPage.getcartContent(i)).price,
+        name :(await cartPage.getCartContent(i)).name,
+        price :(await cartPage.getCartContent(i)).price,
        })
       }
       expect(resultObject).toEqual(expectedProducts);
@@ -116,7 +116,7 @@ for (const i of productsIndex) {
 
       for (let i = 0; i < cartBodyLenght; i++) {
         const total = priceStringToInt(
-          (await cartPage.getcartContent(i)).total,
+          (await cartPage.getCartContent(i)).total,
         );
         cartTotal = cartTotal + total!;
       }
@@ -143,7 +143,7 @@ for (const i of productsIndex) {
       const cartPage = new CartPage(page);
       await page.goto("/view_cart", { waitUntil: "domcontentloaded" });
       const totalCart = priceStringToInt(
-        (await cartPage.getcartContent(0)).total,
+        (await cartPage.getCartContent(0)).total,
       );
 
       // expect total
@@ -183,7 +183,7 @@ for (const i of productsIndex) {
 
       for (let i = 0; i < cartBodyLenght; i++) {
         const price: number | 0 = priceStringToInt(
-          (await cartPage.getcartContent(i)).total,
+          (await cartPage.getCartContent(i)).total,
         );
         if (price !== 0) {
           totalCart.push(price);
@@ -272,8 +272,8 @@ test.describe("Cart Item Operations & Persistence",()=>{
       for (let i = 0; i < cartBeforelenght; i++) {
         
        cartBefore.push({
-        name :(await cartPage.getcartContent(i)).name,
-        price :(await cartPage.getcartContent(i)).price,
+        name :(await cartPage.getCartContent(i)).name,
+        price :(await cartPage.getCartContent(i)).price,
        })
       }
       // Refresh 
@@ -285,8 +285,8 @@ test.describe("Cart Item Operations & Persistence",()=>{
 
       for (let i = 0; i < cartAfterlenght; i++) {
        cartAfter.push({
-        name :(await cartPage.getcartContent(i)).name,
-        price :(await cartPage.getcartContent(i)).price,
+        name :(await cartPage.getCartContent(i)).name,
+        price :(await cartPage.getCartContent(i)).price,
        })
       }
       expect(cartAfter).toEqual(cartBefore)

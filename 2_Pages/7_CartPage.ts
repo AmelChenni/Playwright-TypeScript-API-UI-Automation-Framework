@@ -52,7 +52,7 @@ export default class CartPage{
 }
 // full cart
 
-    async getcartContent(num) {
+    async getCartContent(num) {
         const cartBodyTr =  await this.cartBody.nth(num);
     return {
     //   imageSrc: await cartBodyTr.locator('td .product_image').getAttribute('src'),
@@ -69,7 +69,7 @@ async cartBodyLenght(){
     return cartBodyLenght
 }
 async changeQuantity(num:string){
-   (await this.getcartContent(0)).quantity.fill(num)
+   (await this.getCartContent(0)).quantity.fill(num)
 }
 
 async proccedToCheckoutBtnClick(){
