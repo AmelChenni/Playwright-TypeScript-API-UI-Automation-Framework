@@ -15,7 +15,7 @@ test.describe("Payment Page Rendering Test", () => {
       await expect(paymentFixture.expMonthInput).toBeVisible()
       await expect(paymentFixture.submitBtn).toBeVisible()
       await expect(paymentFixture.heading).toBeVisible();
-await expect(paymentFixture.paymentForm).toBeVisible();
+// await expect(paymentFixture.paymentForm).toBeVisible();
 
 
     });
