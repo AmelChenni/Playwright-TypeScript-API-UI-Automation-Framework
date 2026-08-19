@@ -125,6 +125,8 @@ export default class CheckoutPage{
 // *****************Order Comment Tests****************************
          
          async addCommentText(text:string){
+            await this.commentTextArea.waitFor({ state: 'visible' });
+            await this.commentTextArea.clear();
             await this.commentTextArea.fill(text)
          }
          async getCommentText(){

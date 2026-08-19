@@ -44,6 +44,7 @@ test.describe("UI & Layout Tests", () => {
 });
 
 test.describe("Data Integrity & Calculations", () => {
+  test.describe.configure({ mode: "serial" });
 
 test.beforeEach(async({page})=>{
  // clean the cart
