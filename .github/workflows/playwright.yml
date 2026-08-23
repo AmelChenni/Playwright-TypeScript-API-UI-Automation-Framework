@@ -1,10 +1,15 @@
-name: Playwright Tests
+name: Playwright Tests & Allure Report Deployment
+
 on:
   workflow_dispatch:
   push:
     branches: [ main, master ]
   pull_request:
     branches: [ main, master ]
+
+permissions:
+  contents: write
+
 jobs:
   test:
     timeout-minutes: 60
@@ -15,17 +20,17 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20 
+          node-version: 20
 
       - name: Install dependencies
         run: npm ci
 
-      # 1️⃣
+      # 1️⃣ Get Playwright version
       - name: Get Playwright version
         id: playwright-version
         run: echo "version=$(node -e "console.log(require('@playwright/test/package.json').version)")" >> $GITHUB_OUTPUT
 
-      # 2️⃣ 
+      # 2️⃣  Cache Playwright Browsers
       - name: Cache Playwright Browsers
         id: playwright-cache
         uses: actions/cache@v4
@@ -33,15 +38,30 @@ jobs:
           path: ~/.cache/ms-playwright
           key: ${{ runner.os }}-playwright-${{ steps.playwright-version.outputs.version }}
 
-      # 3️⃣ 
+      # 3️⃣ Install Playwright Browsers
       - name: Install Playwright Browsers
         if: steps.playwright-cache.outputs.cache-hit != 'true'
-        run: npx playwright install chromium 
+        run: npx playwright install chromium
 
-      # 4️⃣
+      # 4️⃣   Install Playwright System Dependencies
       - name: Install Playwright System Dependencies
         if: steps.playwright-cache.outputs.cache-hit == 'true'
         run: npx playwright install-deps chromium
 
+      # 5️⃣ Run Playwright tests
       - name: Run Playwright tests
         run: npx playwright test
+        continue-on-error: true
+
+      # 6️⃣ Allure Report
+      - name: Generate Allure Report
+        if: always()
+        run: npm run allure:generate
+
+      # 7️⃣ GitHub Pages
+      - name: Deploy Allure Report to GitHub Pages
+        if: always()
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./allure-report

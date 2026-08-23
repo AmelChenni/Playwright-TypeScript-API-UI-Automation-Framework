@@ -24,7 +24,7 @@ test.describe('login test',()=>{
     });
   test("POST To Verify Login without email parameter", async ({request}) => {
     const response  =  new LoginApi(request);
-    const responseBody = await response.login(faker.internet.email());
+    const responseBody = await response.login(faker.internet.password());
     
    const responseBodyJson = await responseBody.json();   
     expect(responseBodyJson).toHaveProperty('message', 'Bad request, email or password parameter is missing in POST request.');   
